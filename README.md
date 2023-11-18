@@ -5,7 +5,7 @@ This project aims to collect and analyze open source project data from GitHub to
 
 ## Overview
 GitHub hosts a vast collection of open source software projects and their evolution histories. This rich trove of metadata presents an opportunity to study software development trends, community dynamics and technologies over time through a data-driven lens.
-This project extracts real data from GitHub to understand the dynamics of repositories and the developers who contribute to them using GitHub REST API and Python libraries. It stores the retrieved information in structured SQL and NoSQL databases for efficient querying and retrieval. Analytics are then performed to glean insights, spot patterns, and enable databased decision making.
+This project extracts real data from GitHub to understand the dynamics of repositories and the developers who contribute to them using GitHub REST API and Python libraries. It stores the retrieved information into file. Analytics are then performed to glean insights, spot patterns, and enable databased decision making.
 The goals are to:
 - Systematically archive metadata from GitHub projects
 - Understand project characteristics and relationships

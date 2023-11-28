@@ -13,4 +13,4 @@ class GitHubRepository:
         return f"{self.owner}/{self.name}: {self.description} ({self.watchers})"
 
     def to_csv_row(self):
-        return f"{self.name},{self.owner},{self.description},{self.homepage},{self.license},{self.forks},{self.watchers},{self.date_of_collection}"
+        return [self.name, self.owner, self.description, self.homepage, self.license, self.forks, self.watchers, self.date_of_collection]

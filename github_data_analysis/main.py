@@ -1,30 +1,23 @@
 from classes.github_repository import GitHubRepository
 from utils.api_helpers import get_repository_info
 from utils.csv_helpers import save_as_csv
-import pandas as pd
-import matplotlib.pyplot as plt
 from datetime import datetime
 import csv
-import os
 import requests
+import os
 from visualizations.repository_visualizations import (
     boxplot_commits, 
     boxplot_additions_deletions,
     boxplot_changed_files_author,
     scatterplot_additions_deletions,
-    line_graph_prs_per_day,
-    line_graph_open_closed_prs_per_day
+    calculate_correlations
     )
 
 from visualizations.user_visualizations import (
-    boxplot_additions_deletions,
-    boxplot_commits,
-    boxplot_changed_files_author,
-    scatterplot_additions_deletions,
+    line_graph_prs_per_day,
     line_graph_open_closed_prs_per_day,
-    line_graph_prs_per_day
+    bar_plot_users_per_repository
 )
-# Import other necessary modules
 
 def main_menu():
     while True:
@@ -66,7 +59,8 @@ def visualization_menu():
         print("5. Line Graph of Total PRs per Day")
         print("6. Line Graph of Open vs Closed PRs per Day")
         print("7. Bar Plot of Users per Repository")
-        print("8. Go Back")
+        print("8. Calculate corelations")
+        print("9. Go Back")
 
         choice = input("Enter your choice (1-8): ")
 
@@ -86,11 +80,11 @@ def visualization_menu():
             # For bar_plot_users_per_repository, you might use a different CSV
             bar_plot_users_per_repository('users.csv')
         elif choice == '8':
+            calculate_correlations('repositories.csv')
+        elif choice == '9':
             break
         else:
             print("Invalid choice, please try again.")
-
-
 
 def collect_repository_data():
     owner = input("Enter the repository owner's username: ")
@@ -103,33 +97,39 @@ def collect_repository_data():
         if repo_info is None:
             print("Failed to fetch repository data. The repository may not exist or there was an API error.")
             return
-        # Collect and save pull requests data
+        
         fetch_and_save_pull_requests(owner, repo_name)
-        # Extract unique usernames from the pull requests
-        usernames = extract_usernames_from_prs(f"repos/{owner}-{repo_name}.csv")
 
-        # Check if any usernames were extracted
+        usernames = extract_usernames_from_prs(f"repos/{owner}-{repo_name}.csv")
+        print(f"Usernames extracted: {usernames}")
+
         if usernames:
-        # Collect and save user data
             fetch_and_save_user_data(usernames)
         else:
             print("No user data to fetch.")
-            # Collect and save user data
-            fetch_and_save_user_data(usernames)
 
         # Extract necessary information
         description = repo_info.get('description', 'No description')
+        print(f"Description: {description}")
         homepage = repo_info.get('homepage', 'No homepage')
-        license_info = repo_info.get('license', {}).get('name', 'No license')
+        print(f"Homepage: {homepage}")
+        license_info = 'No license'
+        if repo_info.get('license'):
+            license_info = repo_info['license'].get('name', 'No license')
         forks = repo_info.get('forks_count', 0)
+        print(f"Forks: {forks}")
         watchers = repo_info.get('watchers_count', 0)
+        print(f"watchers:" , {watchers})
         date_of_collection = repo_info.get('updated_at', 'No date')
-
-        # Create a GitHubRepository object
+        print(f"Date of Collection: {date_of_collection}")
+        
+        print("Creating GitHubRepository object...")
         my_repo = GitHubRepository(repo_name, owner, description, homepage, license_info, forks, watchers, date_of_collection)
+        print("GitHubRepository object created.")
 
+        repo_headers = ['Name', 'Owner', 'Description', 'Homepage', 'License', 'Forks', 'Watchers', 'Date of Collection']
         # Save this object to CSV
-        save_as_csv('repositories.csv', my_repo)
+        save_as_csv('repositories.csv', my_repo, repo_headers)
 
         print("Repository data collected and saved successfully.")
 
@@ -214,20 +214,18 @@ def show_repository_summary_input():
     repo_name = input("Enter the repository name: ")
     show_repository_summary(owner, repo_name)
     
-import requests
-import csv
-
 def fetch_and_save_pull_requests(owner, repo_name):
-    # URL for pull requests
+    os.makedirs('repos', exist_ok=True)  # Create 'repos/' directory if it doesn't exist
     prs_url = f"https://api.github.com/repos/{owner}/{repo_name}/pulls"
     prs_response = requests.get(prs_url)
+    print("API Response:", prs_response.json()) 
     pull_requests = prs_response.json()
 
     # Open the CSV file for writing
     with open(f'repos/{owner}-{repo_name}.csv', mode='w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
         # Write the header
-        writer.writerow(['Title', 'Number', 'Body', 'State', 'Created At', 'Closed At', 'User', 'Commits', 'Additions', 'Deletions', 'Changed Files'])
+        writer.writerow(['Title', 'PR_Number', 'Body', 'State', 'Created_At', 'Closed_At', 'User', 'Commits', 'Additions', 'Deletions', 'Changed_Files'])
 
         for pr in pull_requests:
             # Fetch additional details for each PR
@@ -277,22 +275,6 @@ def fetch_and_save_user_data(usernames):
                 # Add contributions if available
             ])
 
-
-def create_visualizations():
-    try:
-        # Load data from CSV
-        df = pd.read_csv('repositories.csv')
-        
-        # Simple visualization: Number of forks per repository
-        df.plot(kind='bar', x='Name', y='Forks', color='blue', title='Number of Forks per Repository')
-        plt.ylabel('Forks')
-        plt.show()
-
-    except FileNotFoundError:
-        print("The repositories.csv file does not exist. Please collect data first.")
-    except Exception as e:
-        print(f"An error occurred: {e}")
-
 def extract_usernames_from_prs(csv_file):
     usernames = set()
     try:
@@ -307,27 +289,6 @@ def extract_usernames_from_prs(csv_file):
         print(f"An error occurred: {e}")
 
     return list(usernames)
-
-def calculate_correlations():
-    try:
-        # Load data
-        df = pd.read_csv('repositories.csv')
-
-        # Select only the numerical columns
-        numerical_data = df.select_dtypes(include=['int64', 'float64'])
-
-        # Calculate correlation matrix
-        correlation_matrix = numerical_data.corr()
-
-        # Display the correlation matrix
-        print("Correlation matrix:")
-        print(correlation_matrix)
-
-    except FileNotFoundError:
-        print("The repositories.csv file does not exist. Please collect data first.")
-    except Exception as e:
-        print(f"An error occurred: {e}")
-
 
 if __name__ == "__main__":
     main_menu()

@@ -45,7 +45,7 @@ def scatterplot_additions_deletions(csv_file):
 def calculate_correlations():
     try:
         # Load data
-        df = pd.read_csv('repositories.csv')
+        df = pd.read_csv('users.csv')
 
         # Select only the numerical columns
         numerical_data = df.select_dtypes(include=['int64', 'float64'])

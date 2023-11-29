@@ -7,7 +7,7 @@ import requests
 import os
 import re
 from bs4 import BeautifulSoup
-import pandas
+import pandas as pd
 from visualizations.repository_visualizations import (
     boxplot_commits, 
     boxplot_additions_deletions,
@@ -83,7 +83,7 @@ def visualization_menu():
             # For bar_plot_users_per_repository, you might use a different CSV
             bar_plot_users_per_repository('users.csv')
         elif choice == '8':
-            calculate_correlations('repositories.csv')
+            calculate_correlations()
         elif choice == '9':
             break
         else:
@@ -298,7 +298,7 @@ def fetch_and_save_pull_requests(owner, repo_name):
     prs_response = requests.get(prs_url)
     print("API Response:", prs_response.json()) 
     pull_requests = prs_response.json()
-    pull_requests = pull_requests[-15:]
+#    pull_requests = pull_requests[-15:]
 
     # Open the CSV file for writing
     with open(f'repos/{owner}-{repo_name}.csv', mode='w', newline='', encoding='utf-8') as file:
@@ -306,7 +306,7 @@ def fetch_and_save_pull_requests(owner, repo_name):
         # Write the header
         writer.writerow(['Title', 'PR_Number', 'Body', 'State', 'Created_At', 'Closed_At', 'User', 'Commits', 'Additions', 'Deletions', 'Changed_Files'])
 
-        for pr in pull_requests:
+        for pr in pull_requests[-10:]:
             # Fetch additional details for each PR
             pr_detail_url = pr['url']
             pr_detail_response = requests.get(pr_detail_url)
@@ -376,7 +376,7 @@ def fetch_and_save_user_data(usernames):
         writer = csv.writer(file)
         writer.writerow(['Username', 'Repositories', 'Followers', 'Following', 'Contributions'])
 
-        for username in usernames:
+        for username in usernames[-10:]:
             user_url = f"https://api.github.com/users/{username}"
             user_response = requests.get(user_url)
             user_data = user_response.json()

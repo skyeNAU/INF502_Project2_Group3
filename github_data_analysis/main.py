@@ -5,6 +5,9 @@ from datetime import datetime
 import csv
 import requests
 import os
+import re
+from bs4 import BeautifulSoup
+import pandas
 from visualizations.repository_visualizations import (
     boxplot_commits, 
     boxplot_additions_deletions,
@@ -31,7 +34,7 @@ def main_menu():
         choice = input("Enter your choice (1-5): ")
 
         if choice == '1':
-            collect_repository_data()
+            api_limit_warning()
         elif choice == '2':
             show_all_repositories()
         elif choice == '3':
@@ -59,7 +62,7 @@ def visualization_menu():
         print("5. Line Graph of Total PRs per Day")
         print("6. Line Graph of Open vs Closed PRs per Day")
         print("7. Bar Plot of Users per Repository")
-        print("8. Calculate corelations")
+        print("8. Calculate correlations")
         print("9. Go Back")
 
         choice = input("Enter your choice (1-8): ")
@@ -82,6 +85,28 @@ def visualization_menu():
         elif choice == '8':
             calculate_correlations('repositories.csv')
         elif choice == '9':
+            break
+        else:
+            print("Invalid choice, please try again.")
+
+def api_limit_warning():
+    print()
+    print('Warning: Rate limits exist for GitHub API')
+    print('To avoid 403 Error/ rate limit exceeded, it is recommended to limit your')
+    print('repository pull request to the 10 most recent pulls. How would you like to ')
+    print('proceed?')
+    while True:
+        print("1. Retrieve last 10 pull requests (recommended)")
+        print("2. Retrieve all pull requests")
+        print("3. Go back")
+
+        choice = input("Enter your choice (1-3): ")
+
+        if choice == '1':
+            collect_repository_data()
+        elif choice == '2':
+            collect_ALL_repository_data()
+        elif choice == '3':
             break
         else:
             print("Invalid choice, please try again.")
@@ -128,6 +153,59 @@ def collect_repository_data():
         print("GitHubRepository object created.")
 
         repo_headers = ['Name', 'Owner', 'Description', 'Homepage', 'License', 'Forks', 'Watchers', 'Date of Collection']
+        # Save this object to CSV
+        save_as_csv('repositories.csv', my_repo, repo_headers)
+
+        print("Repository data collected and saved successfully.")
+
+    except Exception as e:
+        print(f"An error occurred {e}")
+
+
+def collect_ALL_repository_data():
+    owner = input("Enter the repository owner's username: ")
+    repo_name = input("Enter the repository name: ")
+
+    try:
+        # Fetch repository data from GitHub API
+        repo_info = get_repository_info(owner, repo_name)
+
+        if repo_info is None:
+            print("Failed to fetch repository data. The repository may not exist or there was an API error.")
+            return
+
+        fetch_and_save_ALL_pull_requests(owner, repo_name)
+
+        usernames = extract_usernames_from_prs(f"repos/{owner}-{repo_name}.csv")
+        print(f"Usernames extracted: {usernames}")
+
+        if usernames:
+            fetch_and_save_user_data(usernames)
+        else:
+            print("No user data to fetch.")
+
+        # Extract necessary information
+        description = repo_info.get('description', 'No description')
+        print(f"Description: {description}")
+        homepage = repo_info.get('homepage', 'No homepage')
+        print(f"Homepage: {homepage}")
+        license_info = 'No license'
+        if repo_info.get('license'):
+            license_info = repo_info['license'].get('name', 'No license')
+        forks = repo_info.get('forks_count', 0)
+        print(f"Forks: {forks}")
+        watchers = repo_info.get('watchers_count', 0)
+        print(f"watchers:", {watchers})
+        date_of_collection = repo_info.get('updated_at', 'No date')
+        print(f"Date of Collection: {date_of_collection}")
+
+        print("Creating GitHubRepository object...")
+        my_repo = GitHubRepository(repo_name, owner, description, homepage, license_info, forks, watchers,
+                                   date_of_collection)
+        print("GitHubRepository object created.")
+
+        repo_headers = ['Name', 'Owner', 'Description', 'Homepage', 'License', 'Forks', 'Watchers',
+                        'Date of Collection']
         # Save this object to CSV
         save_as_csv('repositories.csv', my_repo, repo_headers)
 
@@ -199,10 +277,10 @@ def show_repository_summary(owner, repo_name):
 def show_pull_requests(owner, repo_name):
     try:
         with open(f'repos/{owner}-{repo_name}.csv', mode='r', newline='', encoding='utf-8') as file:
-            reader = csv.reader(file)
+            reader = pd.read_csv(file)
             print(f"Pull Requests for {repo_name}:")
-            for pr in reader:
-                print(pr)  # Display pull request details
+            pd.set_option('display.max_columns', None)
+            print(reader)
     except Exception as e:
         print(f"An error occurred: {e}")
 
@@ -220,6 +298,7 @@ def fetch_and_save_pull_requests(owner, repo_name):
     prs_response = requests.get(prs_url)
     print("API Response:", prs_response.json()) 
     pull_requests = prs_response.json()
+    pull_requests = pull_requests[-15:]
 
     # Open the CSV file for writing
     with open(f'repos/{owner}-{repo_name}.csv', mode='w', newline='', encoding='utf-8') as file:
@@ -252,9 +331,47 @@ def fetch_and_save_pull_requests(owner, repo_name):
             ])
 
 
+def fetch_and_save_ALL_pull_requests(owner, repo_name):
+    os.makedirs('repos', exist_ok=True)  # Create 'repos/' directory if it doesn't exist
+    prs_url = f"https://api.github.com/repos/{owner}/{repo_name}/pulls"
+    prs_response = requests.get(prs_url)
+    print("API Response:", prs_response.json())
+    pull_requests = prs_response.json()
+
+    # Open the CSV file for writing
+    with open(f'repos/{owner}-{repo_name}.csv', mode='w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        # Write the header
+        writer.writerow(['Title', 'PR_Number', 'Body', 'State', 'Created_At', 'Closed_At', 'User', 'Commits', 'Additions', 'Deletions', 'Changed_Files'])
+
+        for pr in pull_requests:
+            # Fetch additional details for each PR
+            pr_detail_url = pr['url']
+            pr_detail_response = requests.get(pr_detail_url)
+            pr_detail = pr_detail_response.json()
+
+            # Fetch commit data
+            commits_url = pr_detail['commits_url']
+            commits_response = requests.get(commits_url)
+            commits_data = commits_response.json()
+            num_commits = len(commits_data)
+
+            # Fetch additions, deletions, and changed files data (if available)
+            additions = pr_detail.get('additions', 0)
+            deletions = pr_detail.get('deletions', 0)
+            changed_files = pr_detail.get('changed_files', 0)
+
+            # Write data to CSV
+            writer.writerow([
+                pr_detail.get('title'), pr_detail.get('number'), pr_detail.get('body'),
+                pr_detail.get('state'), pr_detail.get('created_at'), pr_detail.get('closed_at'),
+                pr_detail.get('user', {}).get('login'), num_commits, additions, deletions, changed_files
+            ])
+
+
 def fetch_and_save_user_data(usernames):
     csv_file = "users.csv"
-    
+
     with open(csv_file, mode='w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
         writer.writerow(['Username', 'Repositories', 'Followers', 'Following', 'Contributions'])
@@ -264,15 +381,33 @@ def fetch_and_save_user_data(usernames):
             user_response = requests.get(user_url)
             user_data = user_response.json()
 
-            # Extract needed data
-            # ...
+            if '[bot]' in username:
+                followers = 'NA'
+                following = 'NA'
+                repos = 'NA'
+            else:
+                followers = user_data.get('followers')
+                following = user_data.get('following')
+                repos = user_data.get('public_repos')
+
+            # Extract needed data w/ web scraping
+            result = requests.get(f'https://github.com/{username}')
+            content = result.content
+            soup = BeautifulSoup(content, "html.parser")
+
+            found_contributions = soup.find('h2', {'class': "f4 text-normal mb-2"})  # .text.strip()
+            if found_contributions is not None:
+                found_contributions = str(found_contributions.text.strip())
+                contributions = re.split("\s", found_contributions)[0]
+            else:
+                contributions = 'NA'
 
             writer.writerow([
                 username,
-                user_data.get('public_repos'),
-                user_data.get('followers'),
-                user_data.get('following'),
-                # Add contributions if available
+                repos,
+                followers,
+                following,
+                contributions
             ])
 
 def extract_usernames_from_prs(csv_file):

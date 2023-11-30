@@ -76,6 +76,36 @@ There is another class definition called PullRequest, which represents a GitHub 
 class PullRequest:
     # Class definition goes here
 ```
+### 4. Console
+
+Our program functions through in a console which prompts the user with several options. In each of these choices, there are further menus with more specific options. The user has the choice to 1.) Collect data for a specific repository, 2.) Show all repositories, 3.) Create visualizations, 4.) Calculate correlations, 5.) Access the user profile, or 6.) Exit the program.
+
+Each of these options functionality comes from defined functions which are detailed below.
+
+### 5. Collected Repository Data
+
+To collect repository data, a function api_limit_warning() 
+
+### 6. Show All Repositories 
+
+show_all_repositories() 
+
+
+perform_actions_on_repository()
+
+### 5. Getting Profile Data
+
+A function get_user_profile() allows the user to serach GitHub Accounts by username and returns various statistics about the profile including number of repositories, follower count, number of contributions, and more. 
+
+
+### 5. Visualization Menu
+
+The implementation of function called visulaization_menu allows the user to access a number of visualization creation features. The function prompts the user for a respository owner's username as well as the name of the respository, at which point a csv file path is constructed. Now the user is able to choose among but not limited too the options of creating a box plot of commits in open and closed pull requests, a box plot of additions and deletions in pull requests, line graphs of PR's per day, bar plots of users per repository, and calculating correlations.
+
+The subroutines of this function implement visualization functions that read the csv from the defined file path and construct the figures. These functions are stored in respository_visualizations.py and will return error messages if the csv files are empty.
+
+The calculate_correlations() function in particular returns a heat map visualization of a correlation matrix.
+
 
 ### 4. Extract user and pull request count
 
@@ -87,6 +117,8 @@ def extract_user_pull_request_count(pull_requests):
 
 pull_request_count = extract_user_pull_request_count(pull_requests)
 ```
+
+### 5. Functions 
 
 ### 5. Scrape data from user profile page on GitHub
 

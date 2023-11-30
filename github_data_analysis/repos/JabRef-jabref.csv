@@ -1,0 +1,324 @@
+Title,PR_Number,Body,State,Created_At,Closed_At,User,Commits,Additions,Deletions,Changed_Files
+[WIP] Extract PDF References,10437,"<!-- 
+Describe the changes you have made here: what, why, ... 
+Link issues that are fixed, e.g. ""Fixes #333"".
+If you fixed a koppor issue, link it, e.g. ""Fixes https://github.com/koppor/jabref/issues/47"".
+The title of the PR must not reference an issue, because GitHub does not support autolinking there.
+-->
+
+This fixes #10200 by implementing reference extraction from PDF files
+
+<!-- 
+- Go through the list below. Please don't remove any items.
+- [x] done; [ ] not done / not applicable
+-->
+
+### Mandatory checks
+- [ ] Change in `CHANGELOG.md` described in a way that is understandable for the average user (if applicable)
+- [ ] Tests created for changes (if applicable)
+- [ ] Manually tested changed features in running JabRef (always required)
+- [ ] Screenshots added in PR description (for UI changes)
+- [ ] [Checked developer's documentation](https://devdocs.jabref.org/): Is the information available and up to date? If not, I outlined it in this pull request.
+- [ ] [Checked documentation](https://docs.jabref.org/): Is the information available and up to date? If not, I created an issue at <https://github.com/JabRef/user-documentation/issues> or, even better, I submitted a pull request to the documentation repository.
+",open,2023-10-01T23:10:35Z,,aqurilla,9,562,0,11
+Added option to treat all duplicate entries in the same way,10386,"<!-- 
+Describe the changes you have made here: what, why, ... 
+Link issues that are fixed, e.g. ""Fixes #333"".
+If you fixed a koppor issue, link it, e.g. ""Fixes https://github.com/koppor/jabref/issues/47"".
+The title of the PR must not reference an issue, because GitHub does not support autolinking there.
+-->
+
+Fixes #10372
+
+Added the checkbox ""Apply to all entries"" to treat all duplicate entries the same way when copy&pasted in the library.
+
+![jabref_1](https://github.com/JabRef/jabref/assets/28939653/34b10989-4bc4-49e8-8a0e-cf239fa84297)
+
+<!-- 
+- Go through the list below. Please don't remove any items.
+- [x] done; [ ] not done / not applicable
+-->
+
+### Mandatory checks
+- [x] Change in `CHANGELOG.md` described in a way that is understandable for the average user (if applicable)
+- [ ] Tests created for changes (if applicable)
+- [x] Manually tested changed features in running JabRef (always required)
+- [x] Screenshots added in PR description (for UI changes)
+- [ ] [Checked developer's documentation](https://devdocs.jabref.org/): Is the information available and up to date? If not, I outlined it in this pull request.
+- [ ] [Checked documentation](https://docs.jabref.org/): Is the information available and up to date? If not, I created an issue at <https://github.com/JabRef/user-documentation/issues> or, even better, I submitted a pull request to the documentation repository.
+",open,2023-09-16T01:07:50Z,,jlauber18,10,96,8,8
+Implement test cases for search,10193,"<!-- 
+Describe the changes you have made here: what, why, ... 
+Link issues that are fixed, e.g. ""Fixes #333"".
+If you fixed a koppor issue, link it, e.g. ""Fixes https://github.com/koppor/jabref/issues/47"".
+The title of the PR must not reference an issue, because GitHub does not support autolinking there.
+-->
+This PR fixes JabRef/jabref-issue-melting-pot#226.
+
+The test cases are based on use cases from this file https://onedrive.live.com/edit.aspx?resid=492A048CAD3FD00B!28014&ithint=file%2cdocx&authkey=!ABIX1j1SIs-unBk. 
+
+To-Do:
+- [x] EmptyLibrarySearch
+- [x] UpperAndLowerWordSearch
+- [x] SimpleSingleFieldSearch 
+- [x] SimpleMultipleFieldSearch 
+- [x] SensitiveWordSearch
+- [x] SensitiveMultipleFieldSearch
+- [x] SimpleRegularExpressionSearch 
+- [x] SensitiveRegularExpressionSearch
+- [ ] SimplePDFFulltextSearch
+- [ ] SimplePDFNoteFulltextSearch
+- [ ] SensitivePDFFulltextSearch
+- [ ] SensitivePDFNoteFulltextSearch
+- [x] SimpleGroupSearch
+
+<!-- 
+- Go through the list below. Please don't remove any items.
+- [x] done; [ ] not done / not applicable
+-->
+
+### Mandatory checks
+- [ ] Change in `CHANGELOG.md` described in a way that is understandable for the average user (if applicable)
+- [ ] Tests created for changes (if applicable)
+- [ ] Manually tested changed features in running JabRef (always required)
+- [ ] Screenshots added in PR description (for UI changes)
+- [ ] [Checked developer's documentation](https://devdocs.jabref.org/): Is the information available and up to date? If not, I outlined it in this pull request.
+- [ ] [Checked documentation](https://docs.jabref.org/): Is the information available and up to date? If not, I created an issue at <https://github.com/JabRef/user-documentation/issues> or, even better, I submitted a pull request to the documentation repository.
+",open,2023-08-20T12:22:39Z,,Luggas4you,18,306,0,20
+Display files from referenced crossref in entry table (HighCrit version),9717,"Fixes #7731. 
+
+Now display attached files from referenced crossref entry in the entry table. By providing a `getFiles` method in `BibEntry` that takes in a database. From which referenced crossref files are fetched.
+
+<!-- 
+- Go through the list below. Please don't remove any items.
+- [x] done; [ ] not done / not applicable
+-->
+
+### Known Bugs:
+- [ ] Adding a crossref will not update the cell
+- [ ] Adding a file to a crossrefing entry does not update the files if it already had a file from a crossrefed entry.
+- [ ] Removing a crossref will not update the cell
+- [ ] Changing the citation key of the crossrefed entry will not update the cell
+- [ ] Removing a crossrefed entry will not update the cell
+
+### Mandatory checks
+- [x] Change in `CHANGELOG.md` described in a way that is understandable for the average user (if applicable)
+- [x] Tests created for changes (if applicable)
+- [x] Manually tested changed features in running JabRef (always required)
+- [ ] Screenshots added in PR description (for UI changes)
+- [ ] [Checked developer's documentation](https://devdocs.jabref.org/): Is the information available and up to date? If not, I outlined it in this pull request.
+- [ ] [Checked documentation](https://docs.jabref.org/): Is the information available and up to date? If not, I created an issue at <https://github.com/JabRef/user-documentation/issues> or, even better, I submitted a pull request to the documentation repository.",open,2023-03-31T09:22:05Z,,HighCrit,5,46,6,4
+Lucene search backend,8963,"First draft of the switch to the Lucene Search Backend
+
+## Whats working
+
+- Added all bib-fields to the index
+- BibEntry hash is used as an identifier in the index
+- Both fulltext and bib-fields are indexed together, in the same index, in the background. BibEntry-fields changes are prioritized as they are very quick.
+- Can see in the code that searches in bib-fields are working as expected
+- Switch current search to use the lucene backend
+- Sort search-results by lucene score. This means search will not filter the table anymore, but merely sort according to results
+- Global  search (in contrast to main table, the global search window filters for matches with score > 0)
+- Change the file button-icon depending on whether there was a fulltext-search match for this entry
+- Search-Groups
+- Floating search
+- Switch to force sort by score or not
+
+## Todo
+
+- [ ] Remove old search
+- [x] Display x.y at score only (two decimal places)
+  - [ ] The cell itself should be colored. From green to red (all in light shade): 10=green, 0= red
+- [x] Decide whether to display score column. Currently, it shows when a search is active. Users probably cannot do anything with the values, though. Maybe use it to shade entries with high relevance?
+   - --> We keep the score column
+- [x] Use gray background for score==0. See https://github.com/JabRef/jabref/issues/4237#issuecomment-993325334.
+  - [ ]  Scroll to top until hits are shown (scroll down 1 shows a gray line)
+
+## Follow-ups
+
+- Improve fulltext-search-results display
+  - A little improvement was already done. The file icon in the table is now different (shows a magnifying glass) when there were search results in a linked file.
+  - Could be improved even more by inserting a fulltext-results row below the actual row.
+- Improve query-entry (like #8356?)
+
+## Problems:
+
+- [x] The score-column is always used to sort the table as highest-priority. JabRef will only sort by two columns max. This means with the search-score being one of them, users can only sort by one column.
+  - Solution: add sort-columns with shift-click
+  - Solution: Sorting by score column is not forced but optional
+- [x] Everything is indexed with the JabRef field names, which are in English. This means, either we translate the fields when creating an index, or people need to use the english terms for search queries. Translating the fields in english would mean a re-index needs to be triggered whenever the language changes and JabRef would need to notice if the language changed while it was closed.
+  - Solution: leave as-is, search-syntax is English and was English before the migration to lucene
+- [ ] Search group migration.
+  - Lucene syntax is different for normal searches (: instead of = to search in a field)
+  - Regex should still work
+  - No more pseudo-fields
+  - [ ] maybe implement #9072 first, to ease the transition
+  - Should users deal with this themselves?
+
+Fixes #8857 
+![Peek 2022-08-17 20-01](https://user-images.githubusercontent.com/10479048/185213220-b44241cd-29e7-4f6b-9856-640740856302.gif)
+
+
+- [ ] Change in `CHANGELOG.md` described in a way that is understandable for the average user (if applicable)
+- [ ] Tests created for changes (if applicable)
+- [ ] Manually tested changed features in running JabRef (always required)
+- [ ] Screenshots added in PR description (for UI changes)
+- [ ] [Checked developer's documentation](https://devdocs.jabref.org/): Is the information available and up to date? If not, I outlined it in this pull request.
+- [ ] [Checked documentation](https://docs.jabref.org/): Is the information available and up to date? If not, I created an issue at <https://github.com/JabRef/user-documentation/issues> or, even better, I submitted a pull request to the documentation repository.
+",open,2022-07-09T16:58:44Z,,btut,30,1591,2501,99
+WIP: Dbsync performance improvements,8496,"I could not push to the original one 
+Follow up to #8494
+
+Introduced a dummy FXThread method for the CurrentTaskExecutor to fix the tests and added some synchronized to prevent errors with transactions. Need to check if we need this for other udpates as well
+
+
+<!-- 
+Describe the changes you have made here: what, why, ... 
+Link issues that are fixed, e.g. ""Fixes #333"".
+If you fixed a koppor issue, link it, e.g. ""Fixes https://github.com/koppor/jabref/issues/47"".
+The title of the PR must not reference an issue, because GitHub does not support autolinking there.
+-->
+
+
+<!-- 
+- Go through the list below. Please don't remove any items.
+- [x] done; [ ] not done / not applicable
+-->
+
+- [ ] Change in `CHANGELOG.md` described in a way that is understandable for the average user (if applicable)
+- [x] Tests created for changes (if applicable)
+- [x] Manually tested changed features in running JabRef (always required)
+- [ ] Screenshots added in PR description (for UI changes)
+- [ ] [Checked documentation](https://docs.jabref.org/): Is the information available and up to date? If not, I created an issue at <https://github.com/JabRef/user-documentation/issues> or, even better, I submitted a pull request to the documentation repository.
+",open,2022-02-09T19:06:38Z,,Siedlerchr,26,122,55,13
+"Fix re-enabling ""Jump to entry"" for ""linked"" tokens in Field editors",8456,"<!-- 
+Describe the changes you have made here: what, why, ... 
+Link issues that are fixed, e.g. ""Fixes #333"".
+If you fixed a koppor issue, link it, e.g. ""Fixes https://github.com/koppor/jabref/issues/47"".
+The title of the PR must not reference an issue, because GitHub does not support autolinking there.
+-->
+
+Fixes #5484 by enabling ""Jump to entry"" for,
+
+* `CROSSREF`
+* `XREF`
+* `ENTRYSET`
+* `IDS`
+* `RELATED`
+* `XDATA`
+
+in the Entry Editor.
+
+I have only verified it for `CROSSREF` since I don't know how the others are supposed to work. But, since this is re-enabling a feature disabled in #2840 I expect that it is how things used to be.
+
+@tobiasdiez there is a risk this is doing almost exactly what you didn't want in #2840 (directly use the `JabRefFrame` class).
+
+---
+
+Todo:
+
+- [ ] Update `CHANGELOG.md`
+- [ ] Add test cases
+- [ ] See if addressing https://github.com/JabRef/jabref/issues/5284 is within the scope of this issue or re-open it again (i.e., is the wrong ""chip""/""tag"" factory being used)
+
+---
+
+<!-- 
+- Go through the list below. Please don't remove any items.
+- [x] done; [ ] not done / not applicable
+-->
+
+- [ ] Change in `CHANGELOG.md` described in a way that is understandable for the average user (if applicable)
+- [ ] Tests created for changes (if applicable)
+- [x] Manually tested changed features in running JabRef (always required)
+- [ ] Screenshots added in PR description (for UI changes)
+- [ ] [Checked documentation](https://docs.jabref.org/): Is the information available and up to date? If not, I created an issue at <https://github.com/JabRef/user-documentation/issues> or, even better, I submitted a pull request to the documentation repository.
+",open,2022-01-23T22:56:11Z,,k3KAW8Pnf7mkmdSMPHz27,3,13,15,2
+Prototype Implement better Search #341,8356,"The issue was to implement a better search #Issue 341. https://github.com/koppor/jabref/issues/341
+It was mentioned to implement something like this:
+
+![image](https://user-images.githubusercontent.com/91192398/147145402-f587fc26-2cf4-470b-997b-53b801b2bacb.png)
+
+The following things have been added:
+
+- The branch refine-search from #8206 has been added in order to have lucene syntax support.
+- Added popover for the GlobalSearchBar to simplify the lucene search called DropdownMenu
+- Added recent search list into the popover
+- Added visual feedback for Search Query validity. (GlobalSearchBar is green for a valid Query and red for invalid query).
+- Pressing buttons in the DropDownMenu adds a new SearchItem to the searchItemList in SearchFieldSynchronizer and
+synchronizes with the GlobalSearchBar.
+- Added intern textfield in DropDownMenu in order to autocomplete the typed searchstrings. With an add, search and delete button you are able to add the typed string to the GlobalSearchBar, with the search-button you can search your global repository and with the delete button you can delete the whole searchstring .
+- Removed RegexButton.
+
+Recent Prototype looking like this:
+
+![image](https://user-images.githubusercontent.com/91192398/147145387-8d04089c-7e1a-49ee-85e5-7fe80e1416ef.png)
+
+Current problems:
+
+- Removed the ChipView prototype as it's not working.
+- Bracket logic (AND^-1/OR^-1) not working properly yet.
+- YearRange Slider input (yearrange:) doesn't search correctly.
+- Recent search also considers invalid search queries.
+
+
+- [ ] Change in `CHANGELOG.md` described in a way that is understandable for the average user (if applicable)
+- [ ] Tests created for changes (if applicable)
+- [x] Manually tested changed features in running JabRef (always required)
+- [x] Screenshots added in PR description (for UI changes)
+- [x] [Checked documentation](https://docs.jabref.org/): Is the information available and up to date? If not, I created an issue at <https://github.com/JabRef/user-documentation/issues> or, even better, I submitted a pull request to the documentation repository.
+",open,2021-12-22T19:45:53Z,,dmadoery,30,4563,268,74
+Integration with JabRef online,7832,"This PR keeps track of the whole process to integrate JabRef with JabRef online. New PRs should be targeted to this PR. After all PRs have gone into this one AND this one is ready, it will be merged.
+
+Refs #7796 #7798 #7582 
+
+To run the new tests: `gradle test --tests ""*online*""`
+
+**TODO:**
+- [x] Automatically [download graphql schema](https://www.apollographql.com/docs/android/tutorial/02-add-the-graphql-schema/#download-your-servers-schema) during build
+- [x] Remove test queries and their classes
+- [ ] Add [authentication](https://www.apollographql.com/docs/android/tutorial/10-authenticate-your-queries/) using a custom `cookieJar` that stores the cookie across sessions (might be helpful: https://github.com/franmontiel/PersistentCookieJar or https://www.programmersought.com/article/21021005004/ )
+- [x] Pull changes
+- [ ] Push changes
+- [x] Find solution for https://github.com/origin-energy/java-snapshot-testing/issues/108
+
+<!-- 
+Describe the changes you have made here: what, why, ... 
+Link issues that are fixed, e.g. ""Fixes #333"".
+If you fixed a koppor issue, link it, e.g. ""Fixes https://github.com/koppor/jabref/issues/47"".
+The title of the PR must not reference an issue, because GitHub does not support autolinking there.
+-->
+
+-----
+
+<!-- 
+- Go through the list below. Please don't remove any items.
+- [x] done; [ ] not done / not applicable
+-->
+
+- [] Change in `CHANGELOG.md` described in a way that is understandable for the average user (if applicable)
+- [] Tests created for changes (if applicable)
+- [] Manually tested changed features in running JabRef (always required)
+- [] Screenshots added in PR description (for UI changes)
+- [] [Checked documentation](https://docs.jabref.org/): Is the information available and up to date? If not created an issue at <https://github.com/JabRef/user-documentation/issues> or, even better, submitted a pull request to the documentation repository.
+",open,2021-06-19T10:47:06Z,,Siedlerchr,30,1538,9,34
+Add referenced entry's observers to update the entry in the main-table,7754,"<!-- 
+Describe the changes you have made here: what, why, ... 
+Link issues that are fixed, e.g. ""Fixes #333"".
+If you fixed a koppor issue, link it, e.g. ""Fixes https://github.com/koppor/jabref/issues/47"".
+The title of the PR must not reference an issue, because GitHub does not support autolinking there.
+-->
+I change the `getField` method so that every time it will bind entry and referenced entry(if exists). Although the behavior now seems correct, I don't think it is an appropriate way to solve the problem. Hope for some suggestions.
+Mitigates #7730
+
+<!-- 
+- Go through the list below. If a task has been completed, mark it done by using `[x]`.
+- Please don't remove any items, just leave them unchecked if they are not applicable.
+-->
+
+- [x] Change in `CHANGELOG.md` described in a way that is understandable for the average user (if applicable)
+- [ ] Tests created for changes (if applicable)
+- [x] Manually tested changed features in running JabRef (always required)
+- [ ] Screenshots added in PR description (for UI changes)
+- [ ] [Checked documentation](https://docs.jabref.org/): Is the information available and up to date? If not created an issue at <https://github.com/JabRef/user-documentation/issues> or, even better, submitted a pull request to the documentation repository.
+",open,2021-05-19T05:09:57Z,,SuXiChangZhen,7,4,0,2

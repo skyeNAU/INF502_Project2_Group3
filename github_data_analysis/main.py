@@ -65,21 +65,24 @@ def get_user_profile():
         print("****************************************************************************")
         return
      else:
-         user_data = user_response.json()
-         # Fetch contribution events
-         contributions_response = requests.get(contributions_url)
-         contributions_data = contributions_response.json()
-         # Calculate contributions in the last year
-         one_year_ago = datetime.now() - timedelta(days=365)
-         contributions_last_year = [event for event in contributions_data if datetime.strptime(event['created_at'], "%Y-%m-%dT%H:%M:%SZ") >= one_year_ago]
-         # Display user information
-         print("USERNAME                 :     ",owner)
-         print(f"NUMBER OF REPOSITORIES  : {user_data.get('public_repos', 0)}")
-         print(f"NUMBER OF FOLLOWERS     : {user_data.get('followers', 0)}")
-         print(f"NUMBER OF FOLLOWING     : {user_data.get('following', 0)}")
-         print(f"CONTRIBUTIONS LAST YEAR : {len(contributions_last_year)}")
-         print("****************************************************************************")
-         print("****************************************************************************")
+         try:
+             user_data = user_response.json()
+             # Fetch contribution events
+             contributions_response = requests.get(contributions_url)
+             contributions_data = contributions_response.json()
+             # Calculate contributions in the last year
+             one_year_ago = datetime.now() - timedelta(days=365)
+             contributions_last_year = [event for event in contributions_data if datetime.strptime(event['created_at'], "%Y-%m-%dT%H:%M:%SZ") >= one_year_ago]
+             # Display user information
+             print("USERNAME                 :     ",owner)
+             print(f"NUMBER OF REPOSITORIES  : {user_data.get('public_repos', 0)}")
+             print(f"NUMBER OF FOLLOWERS     : {user_data.get('followers', 0)}")
+             print(f"NUMBER OF FOLLOWING     : {user_data.get('following', 0)}")
+             print(f"CONTRIBUTIONS LAST YEAR : {len(contributions_last_year)}")
+             print("****************************************************************************")
+             print("****************************************************************************")
+         except:
+             print('API Rate Limit Exceeded. Please wait and try again.')
      
     
             
@@ -198,6 +201,7 @@ def collect_repository_data():
         save_as_csv('repositories.csv', my_repo, repo_headers)
 
         print("Repository data collected and saved successfully.")
+        print()
 
     except Exception as e:
         print(f"An error occurred {e}")
@@ -339,7 +343,9 @@ def fetch_and_save_pull_requests(owner, repo_name):
     os.makedirs('repos', exist_ok=True)  # Create 'repos/' directory if it doesn't exist
     prs_url = f"https://api.github.com/repos/{owner}/{repo_name}/pulls"
     prs_response = requests.get(prs_url)
-    print("API Response:", prs_response.json()) 
+    print("API Response:")
+    for line in prs_response.json()[:5]:  # Print the first 5 lines of the response
+        print(line)
     pull_requests = prs_response.json()
 #    pull_requests = pull_requests[-15:]
 

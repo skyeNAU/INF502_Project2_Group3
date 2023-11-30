@@ -84,7 +84,40 @@ Each of these options functionality comes from defined functions which are detai
 
 ### 5. Collected Repository Data
 
-To collect repository data, a function api_limit_warning() 
+To collect repository data, a function api_limit_warning is initialized and prompts the user further with options that distinguish between retrieving the last 10 pull requests or retrieving all pull requests.
+
+```python
+def api_limit_warning():
+    print()
+    print('Warning: Rate limits exist for GitHub API')
+    print('To avoid 403 Error/ rate limit exceeded, it is recommended to limit your')
+    print('repository pull request to the 10 most recent pulls. How would you like to ')
+    print('proceed?')
+    while True:
+        print("1. Retrieve last 10 pull requests (recommended)")
+        print("2. Retrieve all pull requests")
+        print("3. Go back")
+
+        choice = input("Enter your choice (1-3): ")
+
+        if choice == '1':
+            collect_repository_data()
+        elif choice == '2':
+            collect_ALL_repository_data()
+        elif choice == '3':
+            break
+        else:
+            print("Invalid choice, please try again.")
+```
+
+The function collect_repository_data() uses several subroutine functions:
+
+get_repository_info()
+fetch_and_save_pull_requests()
+extract_usernames_from_prs()
+fetch_and_save_user_data()
+
+An object is created for the GitHub Repository, and the headers and appropriate data are saved in a CSV file.
 
 ### 6. Show All Repositories 
 
@@ -118,7 +151,8 @@ def extract_user_pull_request_count(pull_requests):
 pull_request_count = extract_user_pull_request_count(pull_requests)
 ```
 
-### 5. Functions 
+### 5.
+
 
 ### 5. Scrape data from user profile page on GitHub
 

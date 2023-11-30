@@ -3,6 +3,11 @@ import matplotlib.pyplot as plt
 
 def boxplot_commits(csv_file):
     df = pd.read_csv(csv_file)
+    if df.empty:
+        print("***********************************************************************")
+        print("No data is available for this repository. Try with another repository")
+        print("***********************************************************************")
+        return
     df.boxplot(column='Commits', by='State')
     plt.title('Commits in Open vs Closed Pull Requests')
     plt.suptitle('')  # Removes the default title
@@ -13,6 +18,11 @@ def boxplot_commits(csv_file):
     
 def boxplot_additions_deletions(csv_file):
     df = pd.read_csv(csv_file)
+    if df.empty:
+        print("***********************************************************************")
+        print("No data is available for this repository. Try with another repository")
+        print("***********************************************************************")
+        return
     df[['Additions', 'Deletions']].plot(kind='box')
     plt.title('Additions and Deletions in Pull Requests')
     plt.ylabel('Count')
@@ -21,6 +31,11 @@ def boxplot_additions_deletions(csv_file):
 
 def boxplot_changed_files_author(csv_file):
     df = pd.read_csv(csv_file)
+    if df.empty:
+        print("***********************************************************************")
+        print("No data is available for this repository. Try with another repository")
+        print("***********************************************************************")
+        return
     if 'Author_Association' not in df.columns:
         print("Column 'Author_Association' not found in the data.")
         return
@@ -35,6 +50,11 @@ def boxplot_changed_files_author(csv_file):
 
 def scatterplot_additions_deletions(csv_file):
     df = pd.read_csv(csv_file)
+    if df.empty:
+        print("***********************************************************************")
+        print("No data is available for this repository. Try with another repository")
+        print("***********************************************************************")
+        return
     df.plot(kind='scatter', x='Additions', y='Deletions')
     plt.title('Relationship Between Additions and Deletions')
     plt.xlabel('Additions')

@@ -1,4 +1,5 @@
 from classes.github_repository import GitHubRepository
+from datetime import datetime, timedelta
 from utils.api_helpers import get_repository_info
 from utils.csv_helpers import save_as_csv
 from datetime import datetime
@@ -29,7 +30,8 @@ def main_menu():
         print("2. Show all repositories")
         print("3. Create visualizations")
         print("4. Calculate correlations")
-        print("5. Exit")
+        print("5. User Profile")
+        print("6. Exit")
         
         choice = input("Enter your choice (1-5): ")
 
@@ -42,10 +44,44 @@ def main_menu():
         elif choice == '4':
             calculate_correlations()
         elif choice == '5':
+            get_user_profile()
+        elif choice == '6':
             print("Exiting...")
             break
         else:
             print("Invalid choice, please try again.")
+            
+def get_user_profile():
+     owner = input("Enter username of the GitHub Account: ")
+     print("****************************************************************************")
+     print("****************************************************************************")
+     user_url = f"https://api.github.com/users/{owner}"
+     contributions_url = f"https://api.github.com/users/{owner}/events"
+    # Fetch user data
+     user_response = requests.get(user_url)
+     if user_response.status_code == 404:
+        print(f"User '{owner}' not found.")
+        print("****************************************************************************")
+        print("****************************************************************************")
+        return
+     else:
+         user_data = user_response.json()
+         # Fetch contribution events
+         contributions_response = requests.get(contributions_url)
+         contributions_data = contributions_response.json()
+         # Calculate contributions in the last year
+         one_year_ago = datetime.now() - timedelta(days=365)
+         contributions_last_year = [event for event in contributions_data if datetime.strptime(event['created_at'], "%Y-%m-%dT%H:%M:%SZ") >= one_year_ago]
+         # Display user information
+         print("USERNAME                 :     ",owner)
+         print(f"NUMBER OF REPOSITORIES  : {user_data.get('public_repos', 0)}")
+         print(f"NUMBER OF FOLLOWERS     : {user_data.get('followers', 0)}")
+         print(f"NUMBER OF FOLLOWING     : {user_data.get('following', 0)}")
+         print(f"CONTRIBUTIONS LAST YEAR : {len(contributions_last_year)}")
+         print("****************************************************************************")
+         print("****************************************************************************")
+     
+    
             
 def visualization_menu():
     # Get repository details from the user
@@ -111,6 +147,11 @@ def api_limit_warning():
         else:
             print("Invalid choice, please try again.")
 
+def get_repository_info(owner, repo_name):
+    url = f"https://api.github.com/repos/{owner}/{repo_name}"
+    response = requests.get(url)
+    return response.json()
+
 def collect_repository_data():
     owner = input("Enter the repository owner's username: ")
     repo_name = input("Enter the repository name: ")
@@ -118,6 +159,7 @@ def collect_repository_data():
     try:
         # Fetch repository data from GitHub API
         repo_info = get_repository_info(owner, repo_name)
+        print(repo_info)
         
         if repo_info is None:
             print("Failed to fetch repository data. The repository may not exist or there was an API error.")
@@ -214,6 +256,8 @@ def collect_ALL_repository_data():
     except Exception as e:
         print(f"An error occurred {e}")
 
+
+
 def show_all_repositories():
     try:
         with open('repositories.csv', mode='r', newline='', encoding='utf-8') as file:
@@ -266,7 +310,7 @@ def show_repository_summary(owner, repo_name):
                     closed_prs += 1
                 users.add(row['User'])
                 # Update datetime parsing format to match your CSV file format
-                pr_date = datetime.strptime(row['Created At'], '%Y-%m-%dT%H:%M:%SZ')
+                pr_date = datetime.strptime(row['Created_At'], '%Y-%m-%dT%H:%M:%SZ')
                 if pr_date < oldest_date:
                     oldest_date = pr_date
 
@@ -298,6 +342,7 @@ def fetch_and_save_pull_requests(owner, repo_name):
     prs_response = requests.get(prs_url)
     print("API Response:", prs_response.json()) 
     pull_requests = prs_response.json()
+    print(pull_requests)
 #    pull_requests = pull_requests[-15:]
 
     # Open the CSV file for writing
@@ -337,6 +382,8 @@ def fetch_and_save_ALL_pull_requests(owner, repo_name):
     prs_response = requests.get(prs_url)
     print("API Response:", prs_response.json())
     pull_requests = prs_response.json()
+    print(pull_requests)
+    print("*************")
 
     # Open the CSV file for writing
     with open(f'repos/{owner}-{repo_name}.csv', mode='w', newline='', encoding='utf-8') as file:

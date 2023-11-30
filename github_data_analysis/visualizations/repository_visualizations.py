@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sb
 
 def boxplot_commits(csv_file):
     df = pd.read_csv(csv_file)
@@ -76,6 +77,12 @@ def calculate_correlations():
         # Display the correlation matrix
         print("Correlation matrix:")
         print(correlation_matrix)
+
+        # plotting correlation heatmap
+        dataplot = sb.heatmap(correlation_matrix, cmap="YlGnBu", annot=True)
+
+        # displaying heatmap
+        plt.show()
 
     except FileNotFoundError:
         print("The repositories.csv file does not exist. Please collect data first.")

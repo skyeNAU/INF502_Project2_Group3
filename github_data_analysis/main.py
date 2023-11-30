@@ -159,7 +159,6 @@ def collect_repository_data():
     try:
         # Fetch repository data from GitHub API
         repo_info = get_repository_info(owner, repo_name)
-        print(repo_info)
         
         if repo_info is None:
             print("Failed to fetch repository data. The repository may not exist or there was an API error.")
@@ -342,7 +341,6 @@ def fetch_and_save_pull_requests(owner, repo_name):
     prs_response = requests.get(prs_url)
     print("API Response:", prs_response.json()) 
     pull_requests = prs_response.json()
-    print(pull_requests)
 #    pull_requests = pull_requests[-15:]
 
     # Open the CSV file for writing
@@ -382,8 +380,7 @@ def fetch_and_save_ALL_pull_requests(owner, repo_name):
     prs_response = requests.get(prs_url)
     print("API Response:", prs_response.json())
     pull_requests = prs_response.json()
-    print(pull_requests)
-    print("*************")
+ 
 
     # Open the CSV file for writing
     with open(f'repos/{owner}-{repo_name}.csv', mode='w', newline='', encoding='utf-8') as file:

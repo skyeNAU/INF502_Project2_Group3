@@ -6,9 +6,21 @@ def get_repository_info(owner, repo_name):
     url = f"https://api.github.com/repos/{owner}/{repo_name}"
 
     try:
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
+        response = requests.get(url)
         return response.json()
     except requests.RequestException as e:
+        print(f"Error fetching repository data: {e}")
+        return None
+
+def get_user_profile(owner):
+     user_url = f"https://api.github.com/users/{owner}"
+     try:
+      user_response = requests.get(user_url)
+      if user_response.status_code == 404:
+        return
+      else:
+         user_data = user_response.json()
+         return user_data
+     except requests.RequestException as e:
         print(f"Error fetching repository data: {e}")
         return None

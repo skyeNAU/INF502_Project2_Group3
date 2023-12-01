@@ -37,6 +37,7 @@ import re
 We define a class GitHubRepository for a Git Hub Repository. It contains attributes such as repo_name, owner, description, homepage, license, forks, watchers, and date_of_collection.
 
 ```python
+
 class GitHubRepository:
     def __init__(self, name, owner, description, homepage, license, forks, watchers, date_of_collection):
         self.name = name
@@ -53,6 +54,7 @@ class GitHubRepository:
 
     def to_csv_row(self):
         return [self.name, self.owner, self.description, self.homepage, self.license, self.forks, self.watchers, self.date_of_collection]
+
 ```
 
 ### 3. Defining a Pull Request Class

@@ -34,11 +34,25 @@ import re
 
 ### 2. Defining a Repository Class
 
-We will also find a class definition for GitHubRepository. This class represents a GitHub repository and contains attributes such as repo_name, owner, description, homepage, license, forks, watchers, and date_of_collection. Here is an example of how to define an instance of this class:
+We define a class GitHubRepository for a Git Hub Repository. It contains attributes such as repo_name, owner, description, homepage, license, forks, watchers, and date_of_collection.
 
 ```python
 class GitHubRepository:
-    # Class definition goes here
+    def __init__(self, name, owner, description, homepage, license, forks, watchers, date_of_collection):
+        self.name = name
+        self.owner = owner
+        self.description = description
+        self.homepage = homepage
+        self.license = license
+        self.forks = forks
+        self.watchers = watchers
+        self.date_of_collection = date_of_collection
+
+    def __str__(self):
+        return f"{self.owner}/{self.name}: {self.description} ({self.watchers})"
+
+    def to_csv_row(self):
+        return [self.name, self.owner, self.description, self.homepage, self.license, self.forks, self.watchers, self.date_of_collection]
 ```
 
 ### 3. Defining a Pull Request Class

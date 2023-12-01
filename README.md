@@ -110,9 +110,10 @@ def api_limit_warning():
             print("Invalid choice, please try again.")
 ```
 
-The function collect_repository_data() uses several subroutine functions:
+The functions collect_repository_data and collect_ALL_repository_datause several subroutine functions:
 
 get_repository_info()
+
 fetch_and_save_pull_requests()
 extract_usernames_from_prs()
 fetch_and_save_user_data()
@@ -121,26 +122,41 @@ An object is created for the GitHub Repository, and the headers and appropriate 
 
 ### 6. Show All Repositories 
 
-show_all_repositories() 
+For the second option in the console, a function show_all_repositories reads the respositories.csv file and allows the user to enter the repository number to perform actions on.
+ 
+A function perform_actions_on repository allows the user to show pull requests or see a summary of the repository.
+
+The show_pull_requests function is quite intricate and pretty dope, it utilizes 
 
 
-perform_actions_on_repository()
 
-### 5. Getting Profile Data
+```python
+def show_pull_requests(owner, repo_name):
+    try:
+        with open(f'repos/{owner}-{repo_name}.csv', mode='r', newline='', encoding='utf-8') as file:
+            reader = pd.read_csv(file)
+            print(f"Pull Requests for {repo_name}:")
+            pd.set_option('display.max_columns', None)
+            print(reader)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+```
 
-A function get_user_profile() allows the user to serach GitHub Accounts by username and returns various statistics about the profile including number of repositories, follower count, number of contributions, and more. 
+### 7. Getting Profile Data
+
+A function get_user_profile allows the user to serach GitHub Accounts by username and returns various statistics about the profile including number of repositories, follower count, number of contributions, and more. 
 
 
-### 5. Visualization Menu
+### 8. Visualization Menu
 
 The implementation of function called visulaization_menu allows the user to access a number of visualization creation features. The function prompts the user for a respository owner's username as well as the name of the respository, at which point a csv file path is constructed. Now the user is able to choose among but not limited too the options of creating a box plot of commits in open and closed pull requests, a box plot of additions and deletions in pull requests, line graphs of PR's per day, bar plots of users per repository, and calculating correlations.
 
 The subroutines of this function implement visualization functions that read the csv from the defined file path and construct the figures. These functions are stored in respository_visualizations.py and will return error messages if the csv files are empty.
 
-The calculate_correlations() function in particular returns a heat map visualization of a correlation matrix.
+The calculate_correlations function in particular returns a heat map visualization of a correlation matrix.
 
 
-### 4. Extract user and pull request count
+### 9. Extract user and pull request count
 
 A function called extract_user_pull_request_count is provided to extract the number of pull requests for each user. It takes a list of PullRequest objects as input and returns a dictionary with user as the key and the count of pull requests as the value.
 

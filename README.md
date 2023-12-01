@@ -4,6 +4,7 @@
 This project aims to collect and analyze open source project data from GitHub to gain useful insights.That uses Python structures, file input and output, exceptions, and API usage. It focuses on writing a complex program that collects and analyzes data from GitHub repositories and developers' profiles.
 
 ## Overview
+This console uses webscraping packages BeautifulSoup, pandas as pd, seaborn, and json.
 GitHub hosts a vast collection of open source software projects and their evolution histories. This rich trove of metadata presents an opportunity to study software development trends, community dynamics and technologies over time through a data-driven lens.
 This project extracts real data from GitHub to understand the dynamics of repositories and the developers who contribute to them using GitHub REST API and Python libraries. It stores the retrieved information into file. Analytics are then performed to glean insights, spot patterns, and enable databased decision making.
 The goals are to:
@@ -14,37 +15,9 @@ The goals are to:
 - Support research through easily accessible datasets
 - Enable exploratory analyses and hypothesis testing
 
-## Requirements
-
-The primary objective of this project is to develop a comprehensive application that collects and analyzes data from GitHub repositories and developers' profiles. By working with real data, you will gain practical experience in Python programming, including working with APIs, handling JSON data, file input/output, and data analysis using libraries such as Pandas.
-To ensure a well-rounded approach, the project requirements are designed to cover various aspects:
-
-1. **Unit Tests**: Write at least 5 unit tests to validate the functionality of your application. This will demonstrate your ability to implement robust test cases and ensure the reliability of your code.
-
-2. **Object-Oriented Programming (OOP)**: Utilize the principles of OOP to structure your code effectively. Use classes and objects to represent and manipulate the data collected from GitHub. This approach will enhance code organization and maintainability.
-
-3. **Data Collection - Repositories**: Collect crucial information about repositories from GitHub, including the repository name, owner, description, homepage, license, number of forks, number of watchers, and the date of data collection itself. When printing the object representing a repository, it should be displayed in the format '<owner>/<repository_name>: <description> (<watchers>)'.
-
-4. **Data Collection - Pull Requests**: Retrieve the pull requests from the first page of a specific query for each repository. For each pull request, gather pertinent information such as the title, number, body, state, creation date, closing date (if applicable), user, and statistics related to commits, additions, deletions, and changed files. To collect this information, utilize the query format: `https://api.github.com/repos/<owner>/<repository>/pulls/<number>`.
-
-5. **Data Collection - User Profiles**: For each author (user) found in the pull requests, collect their username and determine the number of pull requests they have made. Additionally, scrape the user's GitHub profile to obtain further details such as the number of repositories, number of followers, number of following, and number of contributions in the last year.
-
-6. **CSV Data Storage**: Develop a reusable function called `save_as_csv` that converts any object into a CSV entry (row). This function should take the file name and the object as parameters. If the file doesn't exist, it should create the file with a header. If the file already exists, it should append a new line with the object's data in CSV format. Each class should have a method with the same name (`save_as_csv`) that returns a string with the data structured as CSV. The data should be stored in the following files:
-   - Repositories: `repositories.csv`
-   - Pull Requests for each repository: `repos/<owner>-<repository>.csv`
-   - Users: `users.csv`
-
-7. **Console Application**: Implement a menu-driven console application that allows users to interact with the program. The menu should offer options such as:
-   - Collect data for a specific repository
-   - Display all collected repositories (with submenu options for each repository)
-   - Show all pull requests from a specific repository
-   - Provide a summary of a repository (including the number of open and closed pull requests, number of users, and date of the oldest pull request)
-   - Generate visual representations of repository data using Pandas, such as boxplots comparing closed vs. open pull requests in terms of commits and additions/deletions, boxplots comparing the number of changed files grouped by author association, and scatterplots showing the relationship between additions and deletions.
-   - Calculate the correlation between all numeric data in the pull requests for a repository.
-
 ## Implementation
 
-### 1. Importing modules
+### 1. Modules to Import
 This includes importing necessary packages for a smooth program.
 ```python
 import requests
@@ -59,7 +32,7 @@ from bs4 import BeautifulSoup
 import re
 ```
 
-### 2. Define a class for GitHub Repository
+### 2. Defining a Repository Class
 
 We will also find a class definition for GitHubRepository. This class represents a GitHub repository and contains attributes such as repo_name, owner, description, homepage, license, forks, watchers, and date_of_collection. Here is an example of how to define an instance of this class:
 
@@ -68,7 +41,7 @@ class GitHubRepository:
     # Class definition goes here
 ```
 
-### 3. Define a class for Pull Requests
+### 3. Defining a Pull Request Class
 
 There is another class definition called PullRequest, which represents a GitHub pull request. It has attributes like title, number, body, state, date_of_creation, closing_date, and user. Here's an example of how to use this class:
 
@@ -112,21 +85,16 @@ def api_limit_warning():
 
 The functions collect_repository_data and collect_ALL_repository_datause several subroutine functions:
 
-get_repository_info()
-
-fetch_and_save_pull_requests()
-extract_usernames_from_prs()
-fetch_and_save_user_data()
+get_repository_info(),
+fetch_and_save_pull_requests(),
+extract_usernames_from_prs(), and
+fetch_and_save_user_data().
 
 An object is created for the GitHub Repository, and the headers and appropriate data are saved in a CSV file.
 
 ### 6. Show All Repositories 
 
-For the second option in the console, a function show_all_repositories reads the respositories.csv file and allows the user to enter the repository number to perform actions on.
- 
-A function perform_actions_on repository allows the user to show pull requests or see a summary of the repository.
-
-The show_pull_requests function is quite intricate and pretty dope, it utilizes 
+For the second option in the console, a function show_all_repositories reads the respositories.csv file and allows the user to enter the repository number to perform actions on.A function perform_actions_on repository allows the user to show pull requests or see a summary of the repository. The show_pull_requests function reads the saved repository csv file and prints the number of pull requests.
 
 
 
@@ -146,17 +114,81 @@ def show_pull_requests(owner, repo_name):
 
 A function get_user_profile allows the user to serach GitHub Accounts by username and returns various statistics about the profile including number of repositories, follower count, number of contributions, and more. 
 
+```python
+def get_user_profile():
+     owner = input("Enter username of the GitHub Account: ")
+     print("****************************************************************************")
+     print("****************************************************************************")
+     user_url = f"https://api.github.com/users/{owner}"
+     contributions_url = f"https://api.github.com/users/{owner}/events"
+    # Fetch user data
+     user_response = requests.get(user_url)
+     if user_response.status_code == 404:
+        print(f"User '{owner}' not found.")
+        print("****************************************************************************")
+        print("****************************************************************************")
+        return
+     else:
+         try:
+             user_data = user_response.json()
+             # Fetch contribution events
+             contributions_response = requests.get(contributions_url)
+             contributions_data = contributions_response.json()
+             # Calculate contributions in the last year
+             one_year_ago = datetime.now() - timedelta(days=365)
+             contributions_last_year = [event for event in contributions_data if datetime.strptime(event['created_at'], "%Y-%m-%dT%H:%M:%SZ") >= one_year_ago]
+             # Display user information
+             print("USERNAME                 :     ",owner)
+             print(f"NUMBER OF REPOSITORIES  : {user_data.get('public_repos', 0)}")
+             print(f"NUMBER OF FOLLOWERS     : {user_data.get('followers', 0)}")
+             print(f"NUMBER OF FOLLOWING     : {user_data.get('following', 0)}")
+             print(f"CONTRIBUTIONS LAST YEAR : {len(contributions_last_year)}")
+             print("****************************************************************************")
+             print("****************************************************************************")
+         except:
+             print('API Rate Limit Exceeded. Please wait and try again.')
+    ``` 
 
-### 8. Visualization Menu
+
+
+### 8. Visualizations Menu
 
 The implementation of function called visulaization_menu allows the user to access a number of visualization creation features. The function prompts the user for a respository owner's username as well as the name of the respository, at which point a csv file path is constructed. Now the user is able to choose among but not limited too the options of creating a box plot of commits in open and closed pull requests, a box plot of additions and deletions in pull requests, line graphs of PR's per day, bar plots of users per repository, and calculating correlations.
-
 The subroutines of this function implement visualization functions that read the csv from the defined file path and construct the figures. These functions are stored in respository_visualizations.py and will return error messages if the csv files are empty.
-
 The calculate_correlations function in particular returns a heat map visualization of a correlation matrix.
 
 
-### 9. Extract user and pull request count
+# 9. Calculating Correlations
+
+```python
+def calculate_correlations():
+    try:
+        # Load data
+        df = pd.read_csv('users.csv')
+
+        # Select only the numerical columns
+        numerical_data = df.select_dtypes(include=['int64', 'float64'])
+
+        # Calculate correlation matrix
+        correlation_matrix = numerical_data.corr()
+
+        # Display the correlation matrix
+        print("Correlation matrix:")
+        print(correlation_matrix)
+
+        # plotting correlation heatmap
+        dataplot = sb.heatmap(correlation_matrix, cmap="YlGnBu", annot=True)
+
+        # displaying heatmap
+        plt.show()
+
+    except FileNotFoundError:
+        print("The repositories.csv file does not exist. Please collect data first.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+``` 
+
+### 10. Extract user and pull request count
 
 A function called extract_user_pull_request_count is provided to extract the number of pull requests for each user. It takes a list of PullRequest objects as input and returns a dictionary with user as the key and the count of pull requests as the value.
 
@@ -166,9 +198,6 @@ def extract_user_pull_request_count(pull_requests):
 
 pull_request_count = extract_user_pull_request_count(pull_requests)
 ```
-
-### 5.
-
 
 ### 5. Scrape data from user profile page on GitHub
 

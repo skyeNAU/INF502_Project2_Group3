@@ -217,7 +217,7 @@ def calculate_correlations():
         print(f"An error occurred: {e}")
 ``` 
 
-### 10. Extract user and pull request count
+### 10. Extracting Pull Request Count
 
 A function called extract_user_pull_request_count is provided to extract the number of pull requests for each user. It takes a list of PullRequest objects as input and returns a dictionary with user as the key and the count of pull requests as the value.
 

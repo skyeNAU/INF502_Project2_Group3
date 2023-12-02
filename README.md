@@ -228,22 +228,6 @@ def extract_user_pull_request_count(pull_requests):
 pull_request_count = extract_user_pull_request_count(pull_requests)
 ```
 
-### 5. Scrape data from user profile page on GitHub
-
-This section demonstrates how to scrape data from a user's profile page on GitHub. It uses the BeautifulSoup library to parse the HTML content and extract information such as the number of repositories, followers, following, and contributions.
-
-```python
-result = requests.get('https://github.com/username')
-content = result.content
-soup = BeautifulSoup(content, "html.parser")
-
-# Extract required information
-repositories_count = soup.find('span', {'class': 'Counter'}).text.strip()
-followers_count = soup.find_all('span', {'class':"text-bold color-fg-default"})[0].text.strip()
-following_count = soup.find_all('span', {'class':"text-bold color-fg-default"})[1].text.strip()
-contributions = soup.find('h2', {'class':"f4 text-normal mb-2"}).text.strip().split()[0]
-```
-
 ## Usage
 
 To use the project, first clone the GitHub repository:

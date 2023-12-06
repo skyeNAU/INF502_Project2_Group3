@@ -250,15 +250,6 @@ Then run the app.py file:
 python app.py
 ``` 
 
-This launches an interactive menu driven CLI interface. The main options are:
-
-- Collect Data: Enter repo owner and name, data is fetched and stored
-- List Repositories: View summary of stored repos  
-- List Pull Requests: For a selected repo
-- Show Repository Summary: Stats for a repo
-- Run Analyses: Various plots and stats are generated
-- Save Outputs: Figures and DataFrames to files
-
 ## Conclusion
  This GitHub repository serves as a comprehensive guide for working with GitHub using Python. It provides code and explanations for various functionalities, allowing users to interact with GitHub repositories and pull requests effectively.
 
